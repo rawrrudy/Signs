@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import Phaser from "phaser";
-
+import LevelCompleteScene from "../game/scenes/LevelCompleteScene";
 import BootScene from "../game/scenes/BootScene";
 import MenuScene from "../game/scenes/MenuScene";
 import GameScene from "../game/scenes/GameScene";
@@ -33,6 +33,7 @@ export default function GameCanvas() {
         BootScene,
         MenuScene,
         GameScene,
+        LevelCompleteScene,
         ResultScene,
       ],
     };
