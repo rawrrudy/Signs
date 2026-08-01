@@ -4,6 +4,7 @@ import Hazard from "../entities/Hazard";
 import { GameState, type GameState as GameStateType } from "../types/GameState";
 import CameraOverlay from "../entities/Camera";
 import Polaroid from "../entities/Polaroid";
+import GameManager from "../GameManager";
 
 export default class GameScene extends Phaser.Scene {
   private npc!: NPC;
@@ -21,6 +22,8 @@ export default class GameScene extends Phaser.Scene {
   }
 
   create() {
+    GameManager.registerScene(this);
+
     this.cameras.main.setBackgroundColor("#000000");
 
     this.camera = new CameraOverlay(this);
@@ -36,23 +39,23 @@ export default class GameScene extends Phaser.Scene {
 
 
     // Correct Sign
-    this.input.keyboard?.on("keydown-ONE", () => {
+    this.input.keyboard?.on("", () => {
       if (this.state !== GameState.Decision) return;
       this.correctChoice();
     });
 
     // Wrong Signs
-    this.input.keyboard?.on("keydown-TWO", () => {
+    this.input.keyboard?.on("", () => {
       if (this.state !== GameState.Decision) return;
       this.wrongChoice();
     });
 
-    this.input.keyboard?.on("keydown-THREE", () => {
+    this.input.keyboard?.on("", () => {
       if (this.state !== GameState.Decision) return;
       this.wrongChoice();
     });
 
-    this.input.keyboard?.on("keydown-FOUR", () => {
+    this.input.keyboard?.on("", () => {
       if (this.state !== GameState.Decision) return;
       this.wrongChoice();
     });
@@ -87,7 +90,9 @@ export default class GameScene extends Phaser.Scene {
   }
 
   private startDecisionPhase() {
+
     this.state = GameState.Decision;
+    GameManager.showSigns();
 
     this.npc.stopWalking();
 
@@ -112,6 +117,8 @@ export default class GameScene extends Phaser.Scene {
 
     this.state = GameState.Camera;
 
+    GameManager.hideSigns();
+
     this.camera.show();
 
     this.time.delayedCall(800, () => {
@@ -126,8 +133,31 @@ export default class GameScene extends Phaser.Scene {
     this.failure();
   }
 
+  
+
+  public chooseSign(sign: string) {
+
+        console.log("GameScene received:", sign);
+
+        if (this.state !== GameState.Decision) return;
+
+        switch (sign) {
+
+            case "slippery":
+                this.correctChoice();
+                break;
+
+            default:
+                this.wrongChoice();
+                break;
+    
+        }
+
+    }
+
   private failure() {
     this.state = GameState.Failure;
+    GameManager.hideSigns();
 
     console.log("Wrong");
   }
