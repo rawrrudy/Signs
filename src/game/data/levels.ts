@@ -6,74 +6,74 @@ export type LevelData = {
 
 export const levels: LevelData[] = [
 
-    // Level 1
+    // L1
     {
         background: "brokenroad",
         answer: "construction",
         time: 5.0
     },
 
-    // Level 2
+    // L2
     {
         background: "fireroad",
         answer: "fire",
         time: 4.5
     },
 
-    // Level 3
+    // L3
     {
         background: "waterroad",
         answer: "slippery",
         time: 4.0
     },
 
-    // Level 4
+    // L4
     {
         background: "thunderroad",
         answer: "electric",
         time: 3.8
     },
 
-    // Level 5
+    // L5
     {
         background: "fireroad",
         answer: "fire",
         time: 3.5
     },
 
-    // Level 6
+    // L6
     {
         background: "brokenroad",
         answer: "construction",
         time: 3.2
     },
 
-    // Level 7
+    // L7
     {
-        background: "waterroad",
+        background: "floodroad",
         answer: "slippery",
-        time: 2.8
+        time: 2.7
     },
 
-    // Level 8
+    // L8
     {
-        background: "thunderroad",
+        background: "brokenelectricity",
         answer: "electric",
-        time: 2.4
+        time: 2.1
     },
 
-    // Level 9
+    // L9
     {
-        background: "fireroad",
+        background: "firebuilding",
         answer: "fire",
-        time: 2.0
+        time: 1.6
     },
 
-    // Level 10 (Final)
+    // L10 (Final)
     {
-        background: "thunderroad",
+        background: "finalboss",
         answer: "electric",
-        time: 1.5
+        time: 1.0
     }
 
 ];
