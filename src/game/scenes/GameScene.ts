@@ -51,11 +51,12 @@ export default class GameScene extends Phaser.Scene {
         this.camera = new CameraOverlay(this);
 
         this.npc = new NPC(this, 120, 360);
+        this.npc.speed = 120 + this.currentLevel * 15;
 
         this.warningSign = new WarningSign(
             this,
-            this.hazardX,
-            360
+            this.hazardX + 170,
+            330
         );
 
         this.polaroid = new Polaroid(this);
