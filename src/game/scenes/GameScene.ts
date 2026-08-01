@@ -2,44 +2,48 @@ import Phaser from "phaser";
 import NPC from "../entities/NPC";
 import CameraOverlay from "../entities/Camera";
 import Polaroid from "../entities/Polaroid";
+import WarningSign from "../entities/WarningSign";
+import SignUI from "../entities/SignUI";
 import GameManager from "../GameManager";
 import { GameState, type GameState as GameStateType } from "../types/GameState";
 import { levels } from "../data/levels";
-import WarningSign from "../entities/WarningSign";
 
 export default class GameScene extends Phaser.Scene {
 
     private npc!: NPC;
     private camera!: CameraOverlay;
     private polaroid!: Polaroid;
+    private warningSign!: WarningSign;
+    private signUI!: SignUI;
 
     private currentLevel!: number;
-    private hazardX = 780;
+    private hazardX!: number;
 
     private state: GameStateType = GameState.Walking;
     private decisionTimer?: Phaser.Time.TimerEvent;
-    private warningSign!: WarningSign;
 
     constructor() {
         super("GameScene");
     }
 
     create() {
-        console.log("NEW GameScene instance", Math.random());
+    
+        this.events.once("shutdown", () => {
+
+            this.input.keyboard?.removeAllListeners();
+
+            this.time.removeAllEvents();
+
+        });
 
         GameManager.registerScene(this);
 
         this.currentLevel = GameManager.getCurrentLevel();
 
-        // Clean up when leaving this scene
-        this.events.once("shutdown", () => {
-            this.input.keyboard?.removeAllListeners();
-            this.time.removeAllEvents();
-        });
-
         this.cameras.main.setBackgroundColor("#000000");
 
         const level = levels[this.currentLevel];
+        this.hazardX = 780;
 
         const bg = this.add.image(640, 360, level.background);
         bg.setDisplaySize(1280, 720);
@@ -54,9 +58,10 @@ export default class GameScene extends Phaser.Scene {
             360
         );
 
-this.polaroid = new Polaroid(this);
+        this.polaroid = new Polaroid(this);
 
-        // Camera capture
+        this.signUI = new SignUI(this);
+
         this.input.keyboard?.on("keydown-SPACE", () => {
 
             if (this.state !== GameState.Camera) return;
@@ -67,7 +72,7 @@ this.polaroid = new Polaroid(this);
 
                 this.polaroid.show();
 
-                this.time.delayedCall(3000, () => {
+                this.time.delayedCall(2500, () => {
 
                     this.scene.start("LevelCompleteScene");
 
@@ -87,38 +92,26 @@ this.polaroid = new Polaroid(this);
 
         if (
             this.state === GameState.Walking &&
-            this.npc.x >= this.hazardX - 180
+            this.npc.x >= 300
         ) {
+
             this.startDecisionPhase();
-        }
-
-        if (
-            this.state === GameState.Success &&
-            this.npc.x >= this.hazardX + 150
-        ) {
-
-            this.state = GameState.Camera;
-
-            this.camera.show();
 
         }
 
     }
 
     private startDecisionPhase() {
-        console.log("START DECISION", this.currentLevel);
-        console.log("Calling showSigns()");
-        GameManager.showSigns();
 
         this.state = GameState.Decision;
 
-        GameManager.showSigns();
-
         this.npc.stopWalking();
+
+        this.signUI.show();
 
         let remaining = levels[this.currentLevel].time;
 
-        GameManager.updateTimer(remaining);
+        this.signUI.updateTimer(remaining);
 
         this.time.addEvent({
 
@@ -129,7 +122,7 @@ this.polaroid = new Polaroid(this);
 
                 remaining -= 0.1;
 
-                GameManager.updateTimer(
+                this.signUI.updateTimer(
                     Math.max(remaining, 0)
                 );
 
@@ -162,15 +155,39 @@ this.polaroid = new Polaroid(this);
 
     private correctChoice() {
 
+
         this.decisionTimer?.remove();
 
-        GameManager.hideSigns();
+
+
+        this.signUI.hide();
+
+
 
         this.warningSign.place();
 
+
+
         this.npc.resumeWalking();
 
-        this.state = GameState.Success;
+
+
+        this.state = GameState.Camera;
+
+
+
+        this.time.delayedCall(1000, () => {
+
+
+
+            this.npc.stopWalking();
+
+
+
+            this.camera.show();
+
+
+        });
 
     }
 
@@ -184,11 +201,13 @@ this.polaroid = new Polaroid(this);
 
     private failure() {
 
-        GameManager.hideSigns();
+        this.decisionTimer?.remove();
+
+        this.signUI.hide();
 
         this.state = GameState.Failure;
 
-        console.log("Wrong Sign");
+        this.scene.start("FailureScene");
 
     }
 

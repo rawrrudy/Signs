@@ -20,6 +20,11 @@ export default class BootScene extends Phaser.Scene {
     this.load.image("thunderroad", "src/assets/thunderroad.png");
     this.load.image("brokenroad", "src/assets/brokenroad.png");
 
+    this.load.image("water", "src/assets/water.png");
+    this.load.image("fire", "src/assets/fire.png");
+    this.load.image("thunder", "src/assets/thunder.png");
+    this.load.image("construction", "src/assets/construction.png");
+
   }
   create() {
     this.anims.create({

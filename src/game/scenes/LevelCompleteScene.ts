@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import GameManager from "../GameManager";
 import { levels } from "../data/levels";
+import GameScene from "./GameScene";
 
 export default class LevelCompleteScene extends Phaser.Scene {
 
@@ -57,31 +58,27 @@ export default class LevelCompleteScene extends Phaser.Scene {
 
             GameManager.nextLevel();
 
+            this.scene.stop("LevelCompleteScene");
+
             if (GameManager.getCurrentLevel() >= levels.length) {
 
                 GameManager.resetGame();
-
-                this.scene.stop("GameScene");
-                this.scene.stop("LevelCompleteScene");
-
                 this.scene.start("ResultScene");
 
-                return;
+            } else {
+
+                this.scene.remove("GameScene");
+                this.scene.add("GameScene", GameScene, true);
+
             }
-
-            this.scene.stop("GameScene");
-            this.scene.stop("LevelCompleteScene");
-
-            this.scene.start("GameScene");
 
         });
 
         retry.on("pointerdown", () => {
-
-            this.scene.stop("GameScene");
-            this.scene.stop("LevelCompleteScene");
-
-            this.scene.start("GameScene");
+           
+            this.scene.stop("LevelCopleteScene");
+            this.scene.remove("GameScene");
+            this.scene.add("GameScene", GameScene, true);
 
         });
     }

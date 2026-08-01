@@ -5,6 +5,7 @@ import BootScene from "../game/scenes/BootScene";
 import MenuScene from "../game/scenes/MenuScene";
 import GameScene from "../game/scenes/GameScene";
 import ResultScene from "../game/scenes/ResultScene";
+import FailureScene from "../game/scenes/FailureScene";
 
 export default function GameCanvas() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -34,6 +35,7 @@ export default function GameCanvas() {
         MenuScene,
         GameScene,
         LevelCompleteScene,
+        FailureScene,
         ResultScene,
       ],
     };
