@@ -13,17 +13,27 @@ export default class LevelCompleteScene extends Phaser.Scene {
 
         this.cameras.main.setBackgroundColor("#202020");
 
+        const card = this.add.graphics();
+
+        card.fillStyle(0xffffff, 0.95);
+        card.lineStyle(5, 0x111111);
+
+        card.fillRoundedRect(320, 70, 640, 580, 28);
+        card.strokeRoundedRect(320, 70, 640, 580, 28);
+
         const levelNumber = GameManager.getCurrentLevel() + 1;
 
-        this.add.text(640, 170, `LEVEL ${levelNumber} COMPLETE!`, {
-            fontSize: "56px",
-            color: "#ffffff",
+        this.add.text(640, 150, `LEVEL ${levelNumber} COMPLETE!`, {
+            fontFamily: "League Spartan",
+            fontSize: "54px",
+            color: "#111111",
             fontStyle: "bold"
         }).setOrigin(0.5);
 
-        this.add.text(640, 260, "Great job!", {
-            fontSize: "30px",
-            color: "#dddddd"
+        this.add.text(640, 225, "Great job!", {
+            fontFamily: "League Spartan",
+            fontSize: "26px",
+            color: "#555555"
         }).setOrigin(0.5);
 
         const next = this.add.text(640, 420, "NEXT LEVEL", {
