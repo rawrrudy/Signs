@@ -16,6 +16,7 @@ export default class BootScene extends Phaser.Scene {
     this.load.image("run3", "src/assets/runframe3.png");
     this.load.image("run4", "src/assets/runframe4.png");
     this.load.image("run5", "src/assets/runframe5.png");
+    this.load.image("pothole", "src/assets/pothole.png");
 
   }
   create() {

@@ -1,26 +1,27 @@
 import Phaser from "phaser";
 
-export default class NPC extends Phaser.GameObjects.Rectangle {
-  speed = 120;
-  stopped = false;
+export default class NPC extends Phaser.GameObjects.Sprite {
+    speed = 120;
+    stopped = false;
 
-  constructor(scene: Phaser.Scene, x: number, y: number) {
-    super(scene, x, y, 40, 60, 0x3498db);
+    constructor(scene: Phaser.Scene, x:number, y:number){
+        super(scene,x,y,"run1");
+        scene.add.existing(this);
+        this.play("run");
+    }
 
-    scene.add.existing(this);
-  }
+    update(delta:number){
+        if(this.stopped) return;
+        this.x += this.speed * delta / 1000;
+    }
 
-  update(delta: number) {
-    if (this.stopped) return;
+    stopWalking(){
+        this.stopped = true;
+        this.anims.pause();
+    }
 
-    this.x += this.speed * (delta / 1000);
-  }
-
-  stop() {
-    this.stopped = true;
-  }
-
-  resume() {
-    this.stopped = false;
-  }
+    resumeWalking(){
+        this.stopped = false;
+        this.anims.resume();
+    }
 }

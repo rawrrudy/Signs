@@ -14,39 +14,39 @@ export default class GameScene extends Phaser.Scene {
   }
 
   create() {
-    this.cameras.main.setBackgroundColor("#E8E6E3");
+    this.cameras.main.setBackgroundColor("#000000");
 
-    this.add.rectangle(640, 360, 1280, 720, 0xe8e6e3);
-    this.add.rectangle(640, 360, 1280, 140, 0x7d7d7d);
-    this.add.rectangle(640, 260, 1280, 40, 0xcfcfcf);
+    // backgr
+    const road = this.add.image(640, 360, "road");
+    road.setDisplaySize(1280, 720);
+
+    // hazard
     new Hazard(this, this.hazardX, 360);
+
+    // player
     this.npc = new NPC(this, 120, 360);
 
-    // keyboard inp.
+    // input
 
-    // correct
+    // 1 = correct
     this.input.keyboard?.on("keydown-ONE", () => {
       if (this.state !== GameState.Decision) return;
-
       this.correctChoice();
     });
 
-    // wrong 
+    // wrong
     this.input.keyboard?.on("keydown-TWO", () => {
       if (this.state !== GameState.Decision) return;
-
       this.wrongChoice();
     });
 
     this.input.keyboard?.on("keydown-THREE", () => {
       if (this.state !== GameState.Decision) return;
-
       this.wrongChoice();
     });
 
     this.input.keyboard?.on("keydown-FOUR", () => {
       if (this.state !== GameState.Decision) return;
-
       this.wrongChoice();
     });
   }
@@ -65,13 +65,16 @@ export default class GameScene extends Phaser.Scene {
   private startDecisionPhase() {
     this.state = GameState.Decision;
 
-    this.npc.stop();
+    this.npc.stopWalking();
 
-    console.log("⚠ Choose the correct warning sign!");
-    console.log("1 = Slippery");
-    console.log("2 = Fire");
-    console.log("3 = High Voltage");
-    console.log("4 = Construction");
+    console.clear();
+    console.log("DECISION");
+    console.log("-------------------------");
+    console.log("1️⃣  Slippery Surface");
+    console.log("2️⃣  Fire");
+    console.log("3️⃣  High Voltage");
+    console.log("4️⃣  Construction");
+    console.log("-------------------------");
 
     this.decisionTimer = this.time.delayedCall(5000, () => {
       this.failure();
@@ -81,28 +84,27 @@ export default class GameScene extends Phaser.Scene {
   private correctChoice() {
     this.decisionTimer?.remove();
 
-    console.log("Correct!");
+    console.log("Correct Sign!");
 
     this.state = GameState.Camera;
 
     this.time.delayedCall(800, () => {
-      this.npc.resume();
+      this.npc.resumeWalking();
+
+      console.log("Press SPACE to capture the moment");
 
       this.state = GameState.Success;
-
-      console.log("Click on the button to capture");
     });
   }
 
   private wrongChoice() {
     this.decisionTimer?.remove();
-
     this.failure();
   }
 
   private failure() {
     this.state = GameState.Failure;
 
-    console.log("Wrong choice!");
+    console.log("Wrong Sign!");
   }
 }
