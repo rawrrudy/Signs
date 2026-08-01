@@ -1,9 +1,8 @@
+import "./App.css";
+import GameCanvas from "./ui/GameCanvas";
+
 function App() {
-  return (
-    <div>
-      <h1>Signs</h1>
-    </div>
-  );
+  return <GameCanvas />;
 }
 
 export default App;
