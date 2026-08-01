@@ -1,68 +1,108 @@
 import Phaser from "phaser";
 import NPC from "../entities/NPC";
 import Hazard from "../entities/Hazard";
+import { GameState, type GameState as GameStateType } from "../types/GameState";
 
 export default class GameScene extends Phaser.Scene {
+  private npc!: NPC;
+  private hazardX = 950;
+  private state: GameStateType = GameState.Walking;
+  private decisionTimer?: Phaser.Time.TimerEvent;
 
-    private npc!: NPC;
-    private hazardX = 950;
+  constructor() {
+    super("GameScene");
+  }
 
-    constructor() {
-        super("GameScene");
-    }
+  create() {
+    this.cameras.main.setBackgroundColor("#E8E6E3");
 
-    create() {
+    this.add.rectangle(640, 360, 1280, 720, 0xe8e6e3);
+    this.add.rectangle(640, 360, 1280, 140, 0x7d7d7d);
+    this.add.rectangle(640, 260, 1280, 40, 0xcfcfcf);
+    new Hazard(this, this.hazardX, 360);
+    this.npc = new NPC(this, 120, 360);
 
-      this.cameras.main.setBackgroundColor("#E8E6E3");
+    // keyboard inp.
 
-      // ground
-      this.add.rectangle(640,360,1280,720,0xe8e6e3);
+    // correct
+    this.input.keyboard?.on("keydown-ONE", () => {
+      if (this.state !== GameState.Decision) return;
 
-      // road
-      this.add.rectangle(640,360,1280,140,0x7d7d7d);
+      this.correctChoice();
+    });
 
-      // footpath
-      this.add.rectangle(640,260,1280,40,0xcfcfcf);
+    // wrong 
+    this.input.keyboard?.on("keydown-TWO", () => {
+      if (this.state !== GameState.Decision) return;
 
-      // hazard
-      new Hazard(this,950,360);
+      this.wrongChoice();
+    });
 
-      this.add.line(
-        0,
-        0,
-        900,
-        320,
-        900,
-        400,
-        0xff0000
-      ).setLineWidth(4);
+    this.input.keyboard?.on("keydown-THREE", () => {
+      if (this.state !== GameState.Decision) return;
 
-      // NPC
-      this.npc = new NPC(this,120,360);
+      this.wrongChoice();
+    });
 
-      this.input.keyboard?.on("keydown-ONE",()=>{
+    this.input.keyboard?.on("keydown-FOUR", () => {
+      if (this.state !== GameState.Decision) return;
 
-        this.npc.stop();
-
+      this.wrongChoice();
     });
   }
 
-    update(_: number, delta: number) {
+  update(_: number, delta: number) {
+    this.npc.update(delta);
 
-        this.npc.update(delta);
-
-        if(this.npc.x > this.hazardX-80){
-
-            console.log("Danger!");
-
-        }
-
-        if(this.npc.x > this.hazardX-80){
-
-            this.npc.stop();
-
-        }
-
+    if (
+      this.state === GameState.Walking &&
+      this.npc.x >= this.hazardX - 200
+    ) {
+      this.startDecisionPhase();
     }
+  }
 
+  private startDecisionPhase() {
+    this.state = GameState.Decision;
+
+    this.npc.stop();
+
+    console.log("⚠ Choose the correct warning sign!");
+    console.log("1 = Slippery");
+    console.log("2 = Fire");
+    console.log("3 = High Voltage");
+    console.log("4 = Construction");
+
+    this.decisionTimer = this.time.delayedCall(5000, () => {
+      this.failure();
+    });
+  }
+
+  private correctChoice() {
+    this.decisionTimer?.remove();
+
+    console.log("Correct!");
+
+    this.state = GameState.Camera;
+
+    this.time.delayedCall(800, () => {
+      this.npc.resume();
+
+      this.state = GameState.Success;
+
+      console.log("Click on the button to capture");
+    });
+  }
+
+  private wrongChoice() {
+    this.decisionTimer?.remove();
+
+    this.failure();
+  }
+
+  private failure() {
+    this.state = GameState.Failure;
+
+    console.log("Wrong choice!");
+  }
 }

@@ -19,4 +19,8 @@ export default class NPC extends Phaser.GameObjects.Rectangle {
   stop() {
     this.stopped = true;
   }
+
+  resume() {
+    this.stopped = false;
+  }
 }
