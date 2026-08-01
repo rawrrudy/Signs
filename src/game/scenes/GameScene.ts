@@ -5,6 +5,7 @@ import Hazard from "../entities/Hazard";
 export default class GameScene extends Phaser.Scene {
 
     private npc!: NPC;
+    private hazardX = 950;
 
     constructor() {
         super("GameScene");
@@ -38,11 +39,29 @@ export default class GameScene extends Phaser.Scene {
 
       // NPC
       this.npc = new NPC(this,120,360);
+
+      this.input.keyboard?.on("keydown-ONE",()=>{
+
+        this.npc.stop();
+
+    });
   }
 
     update(_: number, delta: number) {
 
         this.npc.update(delta);
+
+        if(this.npc.x > this.hazardX-80){
+
+            console.log("Danger!");
+
+        }
+
+        if(this.npc.x > this.hazardX-80){
+
+            this.npc.stop();
+
+        }
 
     }
 
