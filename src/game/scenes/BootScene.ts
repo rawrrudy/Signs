@@ -7,9 +7,7 @@ export default class BootScene extends Phaser.Scene {
   preload() {
 
     this.load.image("road", "src/assets/road.png");
-    this.load.image("fireroad", "src/assets/fireroad.png");
-    this.load.image("brokenRoad", "src/assets/brokenroad.png");
-    this.load.image("camera", "src/assets/camera.png");
+    this.load.image("camera", "src/assets/camera.png");  
     this.load.image("caution", "src/assets/cautionsign.png");
     this.load.image("run1", "src/assets/runframe1.png");
     this.load.image("run2", "src/assets/runframe2.png");
@@ -17,8 +15,10 @@ export default class BootScene extends Phaser.Scene {
     this.load.image("run4", "src/assets/runframe4.png");
     this.load.image("run5", "src/assets/runframe5.png");
     this.load.image("pothole", "src/assets/pothole.png");
+    this.load.image("fireroad", "src/assets/fireroad.png");
     this.load.image("waterroad", "src/assets/waterroad.png");
     this.load.image("thunderroad", "src/assets/thunderroad.png");
+    this.load.image("brokenroad", "src/assets/brokenroad.png");
 
   }
   create() {

@@ -12,7 +12,7 @@ export default class GameScene extends Phaser.Scene {
     private camera!: CameraOverlay;
     private polaroid!: Polaroid;
 
-    private currentLevel = 0;
+    private currentLevel!: number;
 
     private hazardX = 780;
 
@@ -26,10 +26,14 @@ export default class GameScene extends Phaser.Scene {
     create() {
 
         GameManager.registerScene(this);
+        this.currentLevel = GameManager.getCurrentLevel();
 
         this.cameras.main.setBackgroundColor("#000000");
 
         const level = levels[this.currentLevel];
+
+        console.log(level.background);
+        console.log(this.textures.exists(level.background));
 
         const bg = this.add.image(640, 360, level.background);
         bg.setDisplaySize(1280, 720);
