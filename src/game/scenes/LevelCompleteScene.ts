@@ -1,4 +1,6 @@
 import Phaser from "phaser";
+import GameManager from "../GameManager";
+import { levels } from "../data/levels";
 
 export default class LevelCompleteScene extends Phaser.Scene {
 
@@ -10,7 +12,9 @@ export default class LevelCompleteScene extends Phaser.Scene {
 
         this.cameras.main.setBackgroundColor("#202020");
 
-        this.add.text(640, 170, "LEVEL COMPLETE!", {
+        const levelNumber = GameManager.getCurrentLevel() + 1;
+
+        this.add.text(640, 170, `LEVEL ${levelNumber} COMPLETE!`, {
             fontSize: "56px",
             color: "#ffffff",
             fontStyle: "bold"
@@ -51,16 +55,35 @@ export default class LevelCompleteScene extends Phaser.Scene {
 
         next.on("pointerdown", () => {
 
+            GameManager.nextLevel();
+
+            if (GameManager.getCurrentLevel() >= levels.length) {
+
+                GameManager.resetGame();
+
+                this.scene.stop("GameScene");
+                this.scene.stop("LevelCompleteScene");
+
+                this.scene.start("ResultScene");
+
+                return;
+            }
+
+            this.scene.stop("GameScene");
+            this.scene.stop("LevelCompleteScene");
+
             this.scene.start("GameScene");
 
         });
 
         retry.on("pointerdown", () => {
 
+            this.scene.stop("GameScene");
+            this.scene.stop("LevelCompleteScene");
+
             this.scene.start("GameScene");
 
         });
-
     }
-
 }
+

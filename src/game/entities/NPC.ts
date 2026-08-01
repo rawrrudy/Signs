@@ -10,9 +10,17 @@ export default class NPC extends Phaser.GameObjects.Sprite {
         this.play("run");
     }
 
-    update(delta:number){
-        if(this.stopped) return;
+    update(delta: number) {
+
+        if (this.stopped) {
+            console.log("STOPPED");
+            return;
+        }
+
+        console.log("MOVING");
+
         this.x += this.speed * delta / 1000;
+
     }
 
     stopWalking(){
