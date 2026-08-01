@@ -3,6 +3,7 @@ import NPC from "../entities/NPC";
 import Hazard from "../entities/Hazard";
 import { GameState, type GameState as GameStateType } from "../types/GameState";
 import CameraOverlay from "../entities/Camera";
+import Polaroid from "../entities/Polaroid";
 
 export default class GameScene extends Phaser.Scene {
   private npc!: NPC;
@@ -12,6 +13,8 @@ export default class GameScene extends Phaser.Scene {
 
   private state: GameStateType = GameState.Walking;
   private decisionTimer?: Phaser.Time.TimerEvent;
+
+  private polaroid!: Polaroid;
 
   constructor() {
     super("GameScene");
@@ -28,6 +31,8 @@ export default class GameScene extends Phaser.Scene {
     new Hazard(this, this.hazardX, 360);
 
     this.npc = new NPC(this, 120, 360);
+
+    this.polaroid = new Polaroid(this);
 
 
     // Correct Sign
@@ -57,6 +62,12 @@ export default class GameScene extends Phaser.Scene {
       if (this.state !== GameState.Camera) return;
 
       this.camera.capture();
+
+      this.time.delayedCall(220,()=>{
+
+          this.polaroid.show();
+
+      });
 
       this.state = GameState.Success;
 
