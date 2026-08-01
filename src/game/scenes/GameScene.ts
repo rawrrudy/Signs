@@ -94,6 +94,26 @@ export default class GameScene extends Phaser.Scene {
     this.state = GameState.Decision;
     GameManager.showSigns();
 
+    let remaining = 5;
+
+    GameManager.updateTimer(remaining);
+
+    this.time.addEvent({
+
+        delay:100,
+
+        repeat:49,
+
+        callback:()=>{
+
+            remaining-=0.1;
+
+            GameManager.updateTimer(Math.max(remaining,0));
+
+        }
+
+    });
+
     this.npc.stopWalking();
 
     console.clear();

@@ -5,6 +5,7 @@ import fire from "../../assets/fire.png";
 import thunder from "../../assets/thunder.png";
 import construction from "../../assets/construction.png";
 import { useEffect, useState } from "react";
+import Timer from "./Timer";
 
 export default function SignSelector() {
 
@@ -14,9 +15,22 @@ export default function SignSelector() {
     GameManager.subscribe(setVisible);
   }, []);
 
+
+  const [time,setTime]=useState(5);
+
+  useEffect(()=>{
+ 
+      GameManager.subscribeTimer(setTime);
+
+  },[]);
+
 if (!visible) return null;
 
   return (
+  <>
+    
+    <Timer time={time}/>
+
     <div
       style={{
         position: "fixed",
@@ -52,5 +66,6 @@ if (!visible) return null;
         onClick={() => GameManager.chooseSign("construction")}
       />
     </div>
+  </>
   );
 }
