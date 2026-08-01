@@ -8,6 +8,7 @@ export default class Polaroid {
     constructor(scene: Phaser.Scene){
 
         this.scene = scene;
+
         this.frame = scene.add.container(640,-500);
         this.frame.setDepth(999999);
 
@@ -19,13 +20,12 @@ export default class Polaroid {
             0xffffff
         );
 
-
         const photo = scene.add.rectangle(
             0,
             -30,
             250,
             220,
-            0x222222
+            0x333333
         );
 
         const caption = scene.add.text(
@@ -43,10 +43,13 @@ export default class Polaroid {
             photo,
             caption
         ]);
-
     }
 
     show(){
+
+        this.frame.y = -500;
+        this.frame.angle = 0;
+        this.frame.alpha = 1;
 
         this.scene.tweens.add({
             targets:this.frame,
@@ -55,5 +58,19 @@ export default class Polaroid {
             duration:700,
             ease:"Back.Out"
         });
+
+        this.scene.time.delayedCall(2200,()=>{
+
+            this.scene.tweens.add({
+                targets:this.frame,
+                y:-500,
+                alpha:0,
+                duration:500,
+                ease:"Back.In"
+            });
+
+        });
+
     }
+
 }

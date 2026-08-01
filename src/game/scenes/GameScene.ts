@@ -1,163 +1,92 @@
 import Phaser from "phaser";
 import NPC from "../entities/NPC";
 import Hazard from "../entities/Hazard";
-import { GameState, type GameState as GameStateType } from "../types/GameState";
 import CameraOverlay from "../entities/Camera";
 import Polaroid from "../entities/Polaroid";
 import GameManager from "../GameManager";
+import { GameState, type GameState as GameStateType } from "../types/GameState";
 
 export default class GameScene extends Phaser.Scene {
-  private npc!: NPC;
-  private camera!: CameraOverlay;
 
-  private hazardX = 780;
+    private npc!: NPC;
+    private camera!: CameraOverlay;
+    private polaroid!: Polaroid;
+    private hazardX = 780;
+    private state: GameStateType = GameState.Walking;
+    private decisionTimer?: Phaser.Time.TimerEvent;
 
-  private state: GameStateType = GameState.Walking;
-  private decisionTimer?: Phaser.Time.TimerEvent;
-
-  private polaroid!: Polaroid;
-
-  constructor() {
-    super("GameScene");
-  }
-
-  create() {
-    GameManager.registerScene(this);
-
-    this.cameras.main.setBackgroundColor("#000000");
-
-    this.camera = new CameraOverlay(this);
-
-    const road = this.add.image(640, 360, "road");
-    road.setDisplaySize(1280, 720);
-
-    new Hazard(this, this.hazardX, 360);
-
-    this.npc = new NPC(this, 120, 360);
-
-    this.polaroid = new Polaroid(this);
-
-
-    // Correct Sign
-    this.input.keyboard?.on("", () => {
-      if (this.state !== GameState.Decision) return;
-      this.correctChoice();
-    });
-
-    // Wrong Signs
-    this.input.keyboard?.on("", () => {
-      if (this.state !== GameState.Decision) return;
-      this.wrongChoice();
-    });
-
-    this.input.keyboard?.on("", () => {
-      if (this.state !== GameState.Decision) return;
-      this.wrongChoice();
-    });
-
-    this.input.keyboard?.on("", () => {
-      if (this.state !== GameState.Decision) return;
-      this.wrongChoice();
-    });
-
-    // Camera
-    this.input.keyboard?.on("keydown-SPACE", () => {
-      if (this.state !== GameState.Camera) return;
-
-      this.camera.capture();
-
-      this.time.delayedCall(220,()=>{
-
-          this.polaroid.show();
-
-      });
-
-      this.state = GameState.Success;
-
-      console.log("Photo Captured");
-    });
-  }
-
-  update(_: number, delta: number) {
-    this.npc.update(delta);
-
-    if (
-      this.state === GameState.Walking &&
-      this.npc.x >= this.hazardX - 180
-    ) {
-      this.startDecisionPhase();
+    constructor() {
+        super("GameScene");
     }
-  }
 
-  private startDecisionPhase() {
+    create() {
+        GameManager.registerScene(this);
+        this.cameras.main.setBackgroundColor("#000000");
 
-    this.state = GameState.Decision;
-    GameManager.showSigns();
+        this.camera = new CameraOverlay(this);
 
-    let remaining = 5;
+        const road = this.add.image(640, 360, "road");
+        road.setDisplaySize(1280, 720);
 
-    GameManager.updateTimer(remaining);
+        new Hazard(this, this.hazardX, 360);
 
-    this.time.addEvent({
+        this.npc = new NPC(this, 120, 360);
 
-        delay:100,
+        this.polaroid = new Polaroid(this);
 
-        repeat:49,
+        this.input.keyboard?.on("keydown-SPACE", () => {
+            if (this.state !== GameState.Camera) return;
 
-        callback:()=>{
+            this.camera.capture();
 
-            remaining-=0.1;
+            this.time.delayedCall(220, () => {
+                this.polaroid.show();
+            });
 
-            GameManager.updateTimer(Math.max(remaining,0));
+            this.state = GameState.Success;
+            console.log("Photo Captured!");
+        });
+    }
 
+    update(_: number, delta: number) {
+        this.npc.update(delta);
+
+        if (
+            this.state === GameState.Walking &&
+            this.npc.x >= this.hazardX - 180
+        ) {
+            this.startDecisionPhase();
         }
+    }
 
-    });
+    private startDecisionPhase() {
 
-    this.npc.stopWalking();
+        this.state = GameState.Decision;
+        GameManager.showSigns();
+        this.npc.stopWalking();
 
-    console.clear();
-    console.log("⚠ DECISION");
-    console.log("---------------------");
-    console.log("1 - Slippery Surface");
-    console.log("2 - Fire");
-    console.log("3 - High Voltage");
-    console.log("4 - Construction");
-    console.log("---------------------");
+        let remaining = 5;
 
-    this.decisionTimer = this.time.delayedCall(5000, () => {
-      this.failure();
-    });
-  }
+        GameManager.updateTimer(remaining);
 
-  private correctChoice() {
-    this.decisionTimer?.remove();
+        this.time.addEvent({
+            delay: 100,
+            repeat: 49,
 
-    console.log("Correct Sign");
+            callback: () => {
+                remaining -= 0.1;
+                GameManager.updateTimer(
+                    Math.max(remaining, 0)
+                );
+            }
+        });
 
-    this.state = GameState.Camera;
+        this.decisionTimer = this.time.delayedCall(5000, () => {
+            this.failure();
+        });
+    }
 
-    GameManager.hideSigns();
-
-    this.camera.show();
-
-    this.time.delayedCall(800, () => {
-      this.npc.resumeWalking();
-    });
-
-    console.log("Press SPACE to take the picture.");
-  }
-
-  private wrongChoice() {
-    this.decisionTimer?.remove();
-    this.failure();
-  }
-
-  
-
-  public chooseSign(sign: string) {
-
-        console.log("GameScene received:", sign);
+    public chooseSign(sign: string) {
 
         if (this.state !== GameState.Decision) return;
 
@@ -170,15 +99,29 @@ export default class GameScene extends Phaser.Scene {
             default:
                 this.wrongChoice();
                 break;
-    
         }
-
     }
 
-  private failure() {
-    this.state = GameState.Failure;
-    GameManager.hideSigns();
+    private correctChoice() {
 
-    console.log("Wrong");
-  }
+        this.decisionTimer?.remove();
+        GameManager.hideSigns();
+        this.state = GameState.Camera;
+        this.camera.show();
+
+        this.time.delayedCall(800, () => {
+            this.npc.resumeWalking();
+        });
+    }
+
+    private wrongChoice() {
+        this.decisionTimer?.remove();
+        this.failure();
+    }
+
+    private failure() {
+        GameManager.hideSigns();
+        this.state = GameState.Failure;
+        console.log("Wrong Sign!");
+    }
 }
