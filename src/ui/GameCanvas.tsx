@@ -1,3 +1,7 @@
+import BootScene from "../game/scenes/BootScene";
+import MenuScene from "../game/scenes/MenuScene";
+import ResultScene from "../game/scenes/ResultScene";
+import GameScene from "../game/scenes/GameScene";
 import { useEffect, useRef } from "react";
 import Phaser from "phaser";
 
@@ -14,16 +18,12 @@ export default function GameCanvas() {
       height: 720,
       backgroundColor: "#1b1b1b",
       parent: containerRef.current,
-      scene: {
-        create() {
-          this.add
-            .text(640, 360, "SIGNS", {
-              fontSize: "48px",
-              color: "#ffffff",
-            })
-            .setOrigin(0.5);
-        },
-      },
+      scene: [
+        BootScene,
+        MenuScene,
+        GameScene,
+        ResultScene,
+      ],
     };
 
     gameRef.current = new Phaser.Game(config);
