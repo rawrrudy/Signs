@@ -12,6 +12,7 @@ export default class Polaroid {
         this.frame = scene.add.container(640,-500);
         this.frame.setDepth(999999);
 
+
         const border = scene.add.rectangle(
             0,
             0,
@@ -20,13 +21,18 @@ export default class Polaroid {
             0xffffff
         );
 
-        const photo = scene.add.rectangle(
+
+        const photo = scene.add.image(
             0,
             -30,
-            250,
-            220,
-            0x333333
+            "hc"
         );
+
+        photo.setDisplaySize(
+            250,
+            220
+        );
+
 
         const caption = scene.add.text(
             0,
@@ -34,22 +40,29 @@ export default class Polaroid {
             "PERFECT SHOT",
             {
                 color:"#000",
-                fontSize:"24px"
+                fontSize:"24px",
+                fontFamily:"League Spartan",
+                fontStyle:"bold"
             }
         ).setOrigin(0.5);
+
 
         this.frame.add([
             border,
             photo,
             caption
         ]);
+
     }
+
+
 
     show(){
 
         this.frame.y = -500;
         this.frame.angle = 0;
         this.frame.alpha = 1;
+
 
         this.scene.tweens.add({
             targets:this.frame,
@@ -59,17 +72,26 @@ export default class Polaroid {
             ease:"Back.Out"
         });
 
-        this.scene.time.delayedCall(2200,()=>{
 
-            this.scene.tweens.add({
-                targets:this.frame,
-                y:-500,
-                alpha:0,
-                duration:500,
-                ease:"Back.In"
-            });
 
-        });
+        this.scene.time.delayedCall(
+            2200,
+            ()=>{
+
+
+                this.scene.tweens.add({
+
+                    targets:this.frame,
+                    y:-500,
+                    alpha:0,
+                    duration:500,
+                    ease:"Back.In"
+
+                });
+
+
+            }
+        );
 
     }
 

@@ -12,64 +12,39 @@ import EnvironmentManager from "../entities/EnvironmentManager";
 
 export default class GameScene extends Phaser.Scene {
 
-
     private npc!: NPC;
     private camera!: CameraOverlay;
     private polaroid!: Polaroid;
     private warningSign!: WarningSign;
     private signUI!: SignUI;
     private environment!: EnvironmentManager;
-
+    private cameraHint!: Phaser.GameObjects.Text;
 
     private currentLevel!: number;
     private hazardX!: number;
-
 
     private state: GameStateType = GameState.Walking;
 
     private decisionTimer?: Phaser.Time.TimerEvent;
 
-
-
     constructor(){
-
         super("GameScene");
-
     }
 
-
-
     create(){
-
-
-        // RESET EVERYTHING WHEN LEVEL STARTS
-
         this.state = GameState.Walking;
-
         this.decisionTimer?.remove();
-
         this.decisionTimer = undefined;
-
-
 
         GameManager.registerScene(this);
 
-
-
         this.currentLevel = GameManager.getCurrentLevel();
-
-
 
         this.cameras.main.setBackgroundColor("#000000");
 
-
-
         const level = levels[this.currentLevel];
 
-
-
         this.hazardX = 780;
-
 
 
         const bg = this.add.image(
@@ -93,10 +68,7 @@ export default class GameScene extends Phaser.Scene {
         );
 
 
-        // speed increases every level
-
         this.npc.speed = 120 + this.currentLevel * 15;
-
 
 
         this.warningSign = new WarningSign(
@@ -106,50 +78,57 @@ export default class GameScene extends Phaser.Scene {
         );
 
 
-
         this.polaroid = new Polaroid(this);
-
-
-
         this.signUI = new SignUI(this);
+
+        this.cameraHint = this.add.text(
+            640,
+            680,
+            "PRESS SPACE TO CAPTURE PHOTO",
+            {
+                fontFamily: "League Spartan",
+                fontSize: "22px",
+                color: "#ffffff",
+                backgroundColor: "#000000",
+                padding: {
+                    left: 15,
+                    right: 15,
+                    top: 8,
+                    bottom: 8
+                }
+            }
+        )
+        .setOrigin(0.5)
+        .setAlpha(0)
+        .setDepth(1000);
+
         this.environment = new EnvironmentManager(this);
         this.environment.startRandomEnvironment();
 
 
 
-        // REMOVE OLD KEY LISTENERS
-
         this.input.keyboard?.removeAllListeners();
-
-
 
         this.input.keyboard?.on(
             "keydown-SPACE",
             ()=>{
 
-
                 if(this.state !== GameState.Camera)
                     return;
 
-
-
                 this.camera.capture();
-
+                this.cameraHint.setAlpha(0);
 
 
                 this.time.delayedCall(
                     220,
                     ()=>{
 
-
                         this.polaroid.show();
-
-
 
                         this.time.delayedCall(
                             2500,
                             ()=>{
-
 
                                 console.log(
                                     "GOING TO COMPLETE"
@@ -161,40 +140,24 @@ export default class GameScene extends Phaser.Scene {
                                 this.scene.start(
                                     "LevelCompleteScene"
                                 );
-
-
                             }
                         );
-
-
                     }
                 );
 
 
 
                 this.state = GameState.Success;
-
-
             }
         );
-
     }
-
-
-
-
 
     update(
         _:number,
         delta:number
     ){
 
-
-        // NPC ALWAYS UPDATES WHILE WALKING
-
         this.npc.update(delta);
-
-
 
         if(
             this.state === GameState.Walking &&
@@ -204,39 +167,21 @@ export default class GameScene extends Phaser.Scene {
             this.startDecisionPhase();
 
         }
-
-
     }
-
-
-
-
 
     private startDecisionPhase(){
 
 
         this.state = GameState.Decision;
-
-
-
         this.npc.stopWalking();
-
-
-
         this.signUI.show();
-
-
 
         let remaining =
             levels[this.currentLevel].time;
 
-
-
         this.signUI.updateTimer(
             remaining
         );
-
-
 
         this.time.addEvent({
 
@@ -258,12 +203,8 @@ export default class GameScene extends Phaser.Scene {
                         0
                     )
                 );
-
-
             }
-
         });
-
 
 
         this.decisionTimer =
@@ -275,12 +216,7 @@ export default class GameScene extends Phaser.Scene {
 
             );
 
-
     }
-
-
-
-
 
     public chooseSign(sign:string){
 
@@ -289,8 +225,6 @@ export default class GameScene extends Phaser.Scene {
             this.state !== GameState.Decision
         )
             return;
-
-
 
         if(
             sign === levels[this.currentLevel].answer
@@ -301,40 +235,18 @@ export default class GameScene extends Phaser.Scene {
         }
 
         else{
-
             this.wrongChoice();
-
         }
-
 
     }
 
-
-
-
-
     private correctChoice(){
 
-
         this.decisionTimer?.remove();
-
-
-
         this.signUI.hide();
-
-
-
         this.warningSign.place();
-
-
-
         this.npc.resumeWalking();
-
-
-
         this.state = GameState.Camera;
-
-
 
         this.time.delayedCall(
 
@@ -342,61 +254,29 @@ export default class GameScene extends Phaser.Scene {
 
             ()=>{
 
-
                 this.npc.stopWalking();
 
-
-
                 this.camera.show();
-
-
+                this.cameraHint.setAlpha(1);
             }
-
         );
-
-
     }
-
-
-
-
 
     private wrongChoice(){
 
-
         this.decisionTimer?.remove();
-
-
         this.failure();
-
-
     }
-
-
-
-
 
     private failure(){
 
-
         this.decisionTimer?.remove();
-
-
-
         this.signUI.hide();
-
-
-
         this.state = GameState.Failure;
-
-
 
         this.scene.start(
             "FailureScene"
         );
 
-
     }
-
-
 }

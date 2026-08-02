@@ -16,9 +16,7 @@ export default class EnvironmentManager {
 
 
     constructor(scene: Phaser.Scene) {
-
         this.scene = scene;
-
     }
 
 
@@ -30,10 +28,7 @@ export default class EnvironmentManager {
             Phaser.Utils.Array.Shuffle(this.effects)
             .slice(0, amount);
 
-
         console.log("Environment:", selected);
-
-
         selected.forEach(effect => {
 
             switch(effect) {
@@ -42,26 +37,21 @@ export default class EnvironmentManager {
                     this.rain();
                     break;
 
-
                 case "snow":
                     this.snow();
                     break;
-
 
                 case "fog":
                     this.fog();
                     break;
 
-
                 case "lightning":
                     this.lightning();
                     break;
 
-
                 case "shake":
                     this.shake();
                     break;
-
 
                 case "glitch":
                     this.glitch();
@@ -70,21 +60,15 @@ export default class EnvironmentManager {
                 case "darkness":
                     this.darkness();
                     break;
-
             }
-
         });
-
     }
-
-
 
     private rain(){
 
         const rain = this.scene.add.graphics();
 
         rain.setDepth(100);
-
 
         for(let i = 0; i < 500; i++){
 
@@ -103,24 +87,16 @@ export default class EnvironmentManager {
                 x - 5,
                 y + 45
             );
-
         }
 
-
         this.scene.tweens.add({
-
             targets: rain,
-
             y:100,
-
             duration:300,
-
             repeat:-1,
-
             onRepeat:()=>{
 
                 rain.clear();
-
 
                 for(let i=0;i<150;i++){
 
@@ -144,13 +120,9 @@ export default class EnvironmentManager {
                         x-5,
                         y+20
                     );
-
                 }
-
             } 
-
         });
-
     }
 
 
@@ -159,42 +131,28 @@ export default class EnvironmentManager {
 
         const snow =
             this.scene.add.graphics();
-
-
         snow.setDepth(100);
 
-
         for(let i=0;i<100;i++){
-
             snow.fillStyle(
                 0xffffff,
                 0.8
             );
-
 
             snow.fillCircle(
                 Phaser.Math.Between(0,1280),
                 Phaser.Math.Between(0,720),
                 Phaser.Math.Between(2,5)
             );
-
         }
 
-
         this.scene.tweens.add({
-
             targets:snow,
-
             y:80,
-
             duration:5000,
-
             repeat:-1,
-
             yoyo:true
-
         });
-
     }
 
 
@@ -211,28 +169,19 @@ export default class EnvironmentManager {
                 0.45
             );
 
-
         fog.setDepth(999);
 
-
         this.scene.tweens.add({
-
             targets:fog,
-
             alpha:{
                 from:0.25,
                 to:0.55
             },
 
             duration:2000,
-
             yoyo:true,
-
             repeat:-1
-
         });
-
-
     }
 
 
@@ -252,11 +201,8 @@ export default class EnvironmentManager {
                     255,
                     255
                 );
-
             }
-
         });
-
     }
 
 
@@ -264,22 +210,16 @@ export default class EnvironmentManager {
     private shake(){
 
         this.scene.time.addEvent({
-
             delay:800,
-
             loop:true,
 
             callback:()=>{
-
                 this.scene.cameras.main.shake(
                     300,
                     0.025
                 );
-
             }
-
         });
-
     }
 
     private darkness(){
@@ -294,9 +234,7 @@ export default class EnvironmentManager {
                 0.55
             );
 
-
         dark.setDepth(95);
-
     }
 
 
@@ -319,14 +257,10 @@ export default class EnvironmentManager {
 
 
         this.scene.time.addEvent({
-
             delay:Phaser.Math.Between(3000,5000),
-
             loop:true,
 
             callback:()=>{
-
-
                 overlay.setAlpha(
                     Phaser.Math.FloatBetween(
                         0.1,
@@ -340,11 +274,9 @@ export default class EnvironmentManager {
                     ()=>overlay.setAlpha(0)
                 );
 
-
             }
 
         });
-
 
     }
 

@@ -5,7 +5,8 @@ export default class BootScene extends Phaser.Scene {
     super("BootScene");
   }
   preload() {
-
+    
+    this.load.image("hc", "src/assets/hc.png");
     this.load.image("logo", "src/assets/logo.png");
     this.load.image("arcana", "src/assets/arcana.jpg");
     this.load.image("road", "src/assets/road.png");
@@ -29,6 +30,11 @@ export default class BootScene extends Phaser.Scene {
     this.load.image("fire", "src/assets/fire.png");
     this.load.image("thunder", "src/assets/thunder.png");
     this.load.image("construction", "src/assets/construction.png");
+
+    this.load.audio("background", "src/audio/background.mp3");
+    this.load.audio("lvlup", "src/audio/lvlup.mp3");
+    this.load.audio("lvlfail", "src/audio/lvlfail.mp3");
+    this.load.audio("finalboss", "src/audio/finalboss.mp3");
 
   }
   create() {
