@@ -3,7 +3,7 @@
 > Signs is a roleplay simulator game, where you have to face many different emergency conditions and you must navigate through them!
 
 <p align="center">
-  <img src="public/assets/logo.png" width="900"/>
+  <img src="public/assets/logo.png" width="400"/>
 </p>
 
 ---
