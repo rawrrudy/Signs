@@ -7,6 +7,7 @@ import SignUI from "../entities/SignUI";
 import GameManager from "../GameManager";
 import { GameState, type GameState as GameStateType } from "../types/GameState";
 import { levels } from "../data/levels";
+import EnvironmentManager from "../entities/EnvironmentManager";
 
 
 export default class GameScene extends Phaser.Scene {
@@ -17,6 +18,7 @@ export default class GameScene extends Phaser.Scene {
     private polaroid!: Polaroid;
     private warningSign!: WarningSign;
     private signUI!: SignUI;
+    private environment!: EnvironmentManager;
 
 
     private currentLevel!: number;
@@ -110,6 +112,8 @@ export default class GameScene extends Phaser.Scene {
 
 
         this.signUI = new SignUI(this);
+        this.environment = new EnvironmentManager(this);
+        this.environment.startRandomEnvironment();
 
 
 
